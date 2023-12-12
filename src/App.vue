@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import Table, { TColumn } from "./components/table.vue";
-import Tree, { TNode } from "./components/tree.vue";
+import Table from "./components/table.vue";
+import Tree from "./components/tree.vue";
+import { TNode } from "./types/tree";
+import { TColumn } from "./types/table";
 
 //Tree configurations and data
 const data: TNode[] = [
@@ -71,7 +73,7 @@ const tableData = [
 ];
 
 const onNodeClick = (item) => {
-  alert(item.value);
+  console.log(item.value);
 };
 
 const columns: TColumn[] = [
@@ -111,31 +113,39 @@ const onTableItemClick = (item) => {
   <div class="app">
     <div class="task-board">
       <h1>Tree</h1>
-      <Tree :nodes="data" :on-node-click="onNodeClick" />
+      <transition name="slide-fade">
+        <Tree v-if="true" :nodes="data" :on-node-click="onNodeClick" />
+      </transition>
     </div>
     <div class="task-board">
       <h1>Table</h1>
-      <Table :columns="columns" :data="tableData">
-        <template #tags="colProps">
-          <p>
-            <span class="tag" type="button" v-for="tag in colProps.row['tags']">
-              {{ tag }}
-            </span>
-          </p>
-        </template>
+      <Transition name="bounce" mode="default">
+        <Table v-if="true" :columns="columns" :data="tableData">
+          <template #tags="colProps">
+            <p>
+              <span
+                class="tag"
+                type="button"
+                v-for="tag in colProps.row['tags']"
+              >
+                {{ tag }}
+              </span>
+            </p>
+          </template>
 
-        <template #action="colProps">
-          <p>
-            <button
-              class="button"
-              type="button"
-              @click="onTableItemClick(colProps.row)"
-            >
-              Alert
-            </button>
-          </p>
-        </template>
-      </Table>
+          <template #action="colProps">
+            <p>
+              <button
+                class="button"
+                type="button"
+                @click="onTableItemClick(colProps.row)"
+              >
+                Alert
+              </button>
+            </p>
+          </template>
+        </Table>
+      </Transition>
     </div>
   </div>
 </template>

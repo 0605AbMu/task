@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import { defineProps, withDefaults, ref, computed } from "vue";
-
-export type TColumn = {
-  propName: string | null;
-  title: string;
-  order?: number;
-  [key: string]: any;
-};
-
-export type OnTableRowClickType = (item, items) => Promise<void> | void;
+import { withDefaults, ref, computed } from "vue";
+import { TColumn, OnTableRowClickType } from "../types/table";
 
 const props = withDefaults(
   defineProps<{

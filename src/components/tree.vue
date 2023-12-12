@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import { defineProps, withDefaults, ref } from "vue";
-
-export type TNode = {
-  key: string;
-  value: any;
-  childs?: TNode[];
-};
-
-export type OnNodeClickType = (item, items) => Promise<void> | void;
-
+import { withDefaults, ref, Transition } from "vue";
+import { TNode, OnNodeClickType } from "../types/tree";
 const props = withDefaults(
   defineProps<{
     nodes: TNode[];
@@ -58,11 +50,13 @@ const onItemClick = (item) => {
 
         {{ item.key }}
       </div>
-      <tree
-        v-if="!item.hasNoChild && item.isOpened"
-        :nodes="item.childs"
-        @node-click="props.onNodeClick"
-      />
+      <Transition name="slide-fade">
+        <tree
+          v-if="!item.hasNoChild && item.isOpened"
+          :nodes="item.childs"
+          @node-click="props.onNodeClick"
+        />
+      </Transition>
     </div>
   </div>
 </template>
