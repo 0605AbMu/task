@@ -1,44 +1,45 @@
 <script setup lang="ts">
 import { defineProps, withDefaults, ref } from "vue";
-export type item = {
+
+export type TNode = {
   key: string;
   value: any;
-  childs?: item[];
+  childs?: TNode[];
 };
 
-export type OnItemClickType = (item, items) => Promise<void> | void;
+export type OnNodeClickType = (item, items) => Promise<void> | void;
 
 const props = withDefaults(
   defineProps<{
-    items: item[];
-    onItemClick: OnItemClickType;
+    nodes: TNode[];
+    onNodeClick: OnNodeClickType;
   }>(),
   {
-    items(props) {
+    nodes(props) {
       return [];
     },
-    onItemClick: () => {},
+    onNodeClick: () => {},
   }
 );
 
-const remakeItems = (data: item[] | undefined) => {
+const remakeNodes = (data: TNode[] | undefined) => {
   if (!data || !Array.isArray(data)) return [];
   return data.map((x) => {
     return {
       key: x.key,
       value: x.value,
-      childs: remakeItems(x.childs),
+      childs: remakeNodes(x.childs),
       hasNoChild: !(Array.isArray(x.childs) && x.childs.length > 0),
       isOpened: ref(false),
     };
   });
 };
 
-const redefinedData = ref(remakeItems(props.items));
+const redefinedData = ref(remakeNodes(props.nodes));
 
 const onItemClick = (item) => {
   item.isOpened = !item.isOpened;
-  return props.onItemClick(item, redefinedData.value);
+  return props.onNodeClick(item, redefinedData.value);
 };
 </script>
 
@@ -59,8 +60,8 @@ const onItemClick = (item) => {
       </div>
       <tree
         v-if="!item.hasNoChild && item.isOpened"
-        :items="item.childs"
-        @item-click="props.onItemClick"
+        :nodes="item.childs"
+        @node-click="props.onNodeClick"
       />
     </div>
   </div>
@@ -74,14 +75,12 @@ const onItemClick = (item) => {
   left: 0;
   margin: 0 auto;
   text-align: left;
-
-  width: calc(100% - 4px);
+  width: calc(100% - 0.5px);
 
   display: flex;
   flex-direction: column;
 
   row-gap: 1px;
-
   box-sizing: border-box;
 
   user-select: none;

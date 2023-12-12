@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-import Table from "./components/table.vue";
-import tree, { item } from "./components/tree.vue";
+import Table, { TColumn } from "./components/table.vue";
+import Tree, { TNode } from "./components/tree.vue";
 
-const data: item[] = [
+//Tree configurations and data
+const data: TNode[] = [
   {
     key: "Fruits",
     value: 1,
@@ -45,20 +45,62 @@ const data: item[] = [
   },
 ];
 
+//Table configurations and data
 const tableData = [
   {
     id: 4,
     name: "Olma",
+    age: 30,
+    address: "Tashkent, Chilanzar",
+    tags: ["nice", "developer"],
+  },
+  {
+    id: 5,
+    name: "Olma",
+    age: 30,
+    address: "Tashkent, Chilanzar",
+    tags: ["nice", "developer"],
   },
   {
     id: 6,
-    name: "Behi",
+    name: "Olma",
+    age: 30,
+    address: "Tashkent, Chilanzar",
+    tags: ["nice", "developer"],
   },
 ];
 
-const onItemClick = (item) => {
+const onNodeClick = (item) => {
   alert(item.value);
 };
+
+const columns: TColumn[] = [
+  {
+    title: "ID",
+    propName: "id",
+    order: 0,
+  },
+  {
+    title: "Age",
+    propName: "age",
+    order: 1,
+  },
+  {
+    title: "Address",
+    propName: "address",
+    order: 2,
+  },
+  {
+    title: "Tags",
+    propName: "tags",
+    order: 3,
+  },
+  {
+    title: "Action",
+    propName: "action",
+    order: 4,
+  },
+];
 
 const onTableItemClick = (item) => {
   alert(JSON.stringify(item));
@@ -67,29 +109,64 @@ const onTableItemClick = (item) => {
 
 <template>
   <div class="app">
-    <tree :items="data" :on-item-click="onItemClick" />
-    <Table
-      :columns="[
-        { title: 'ID', propName: 'id', order: 2 },
-        { title: 'First Name', propName: 'name', order: 1 },
-      ]"
-      :data="tableData"
-      @item-click="onTableItemClick"
-    />
+    <div class="task-board">
+      <h1>Tree</h1>
+      <Tree :nodes="data" :on-node-click="onNodeClick" />
+    </div>
+    <div class="task-board">
+      <h1>Table</h1>
+      <Table :columns="columns" :data="tableData">
+        <template #tags="colProps">
+          <p>
+            <span class="tag" type="button" v-for="tag in colProps.row['tags']">
+              {{ tag }}
+            </span>
+          </p>
+        </template>
+
+        <template #action="colProps">
+          <p>
+            <button
+              class="button"
+              type="button"
+              @click="onTableItemClick(colProps.row)"
+            >
+              Alert
+            </button>
+          </p>
+        </template>
+      </Table>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+h1 {
+  color: #fff;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.button {
+  padding: 10px;
+  border: none;
+  background-color: #67c23a;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.tag {
+  padding: 5px;
+  background-color: #ecf5ff;
+  color: #409eff;
+  border-radius: 15px;
+  margin: 0 1px;
+  border: none;
+}
+
+.task-board {
+  border: 3px dashed #fff;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 30px;
 }
 </style>

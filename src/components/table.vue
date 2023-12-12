@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import { defineProps, withDefaults, ref, computed } from "vue";
+
 export type TColumn = {
-  propName: string;
+  propName: string | null;
   title: string;
   order?: number;
   [key: string]: any;
 };
 
-export type OnTableItemClickType = (item, items) => Promise<void> | void;
+export type OnTableRowClickType = (item, items) => Promise<void> | void;
 
 const props = withDefaults(
   defineProps<{
     columns: TColumn[];
     data: any[];
-    onItemClick: OnTableItemClickType;
+    onRowClick: OnTableRowClickType;
   }>(),
   {
     columns: () => [],
     data: () => [],
-    onItemClick: () => {},
+    onRowClick: () => {},
   }
 );
 
@@ -26,7 +27,7 @@ const colsWithOrder = computed(() =>
   props.columns.sort((col, next) => (col.order ?? 0) - (next.order ?? 0))
 );
 
-const resoleData = (data) => {
+const resolveData = (data) => {
   if (typeof data === "function") {
     const result = data();
     return result;
@@ -41,8 +42,12 @@ const resoleData = (data) => {
     <tr class="header">
       <th v-for="col in colsWithOrder">{{ col.title }}</th>
     </tr>
-    <tr class="item" v-for="item in data" @click="onItemClick(item, data)">
-      <td v-for="col in colsWithOrder">{{ resoleData(item[col.propName]) }}</td>
+    <tr class="row" v-for="item in data" @click="onRowClick(item, data)">
+      <td v-for="col in colsWithOrder">
+        <slot :name="col.propName" :row="item">
+          {{ col.propName ? resolveData(item[col.propName]) : "" }}
+        </slot>
+      </td>
     </tr>
   </table>
 </template>
@@ -58,24 +63,24 @@ tr {
   border: 5px solid black;
 }
 
-.item {
+.row {
   border: none;
 }
 
-.item:nth-child(odd) {
+.row:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.08);
 }
 
-.item {
+.row {
   padding: 2px;
   cursor: pointer;
   border: 1px solid #00000017;
 }
-.item:hover {
+.row:hover {
   background-color: rgba(70, 183, 252, 0.212);
 }
 
-.item > td {
+.row > td {
   padding: 10px;
 }
 
