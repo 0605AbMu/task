@@ -110,13 +110,14 @@ const onTableItemClick = (item) => {
 </script>
 
 <template>
-  <div class="app">
+  <div class="app container">
     <div class="task-board">
       <h1>Tree</h1>
       <transition name="slide-fade">
         <Tree v-if="true" :nodes="data" :on-node-click="onNodeClick" />
       </transition>
     </div>
+    <hr />
     <div class="task-board">
       <h1>Table</h1>
       <Transition name="bounce" mode="default">
@@ -151,9 +152,6 @@ const onTableItemClick = (item) => {
 </template>
 
 <style scoped>
-h1 {
-  color: #fff;
-}
 .button {
   padding: 10px;
   border: none;
@@ -173,7 +171,7 @@ h1 {
   border: none;
 }
 
-.task-board {
+.task-board_old {
   border: 3px dashed #fff;
   border-radius: 10px;
   padding: 10px;

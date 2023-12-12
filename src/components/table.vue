@@ -49,6 +49,8 @@ table {
   width: 100%;
   background-color: #fff;
   overflow-x: auto;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
 tr {
@@ -59,7 +61,7 @@ tr {
   border: none;
 }
 
-.row:nth-child(odd) {
+.row:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.08);
 }
 
